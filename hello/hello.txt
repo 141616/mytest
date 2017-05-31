@@ -1,1 +1,67 @@
-add hello
+var newsList = [{
+  id: 'n1'
+}, {
+  id: 'n2'
+}, {
+  id: 'n3'
+}, {
+  id: 'n4',
+  pid: 'n1'
+}, {
+  id: 'n5',
+  pid: 'n2'
+}, {
+  id: 'n6',
+  pid: 'n3'
+}, {
+  id: 'n7',
+  pid: 'n4'
+}, {
+  id: 'n8',
+  pid: 'n4'
+}, {
+  id: 'n9',
+  pid: 'n7'
+}]
+
+var tree = {
+  addChild: function(node, child) {
+    if (node.children === undefined) {
+      node.children = []
+    }
+    node.children.push(child)
+    return node
+  },
+  loop: function(arr, data) {
+    var that = this
+    for (var i = 0; i < arr.length; i++) {
+      var node = arr[i]
+      var filterData = data.filter(function(item) {
+        if (item.pid === node.id) {
+          node = Object.assign({}, that.addChild(node, item))
+        }
+        return item.pid !== node.id
+      })
+      if (node.children && node.children.length && filterData && filterData.length) {
+        this.loop(node.children, filterData)
+      }
+    }
+  },
+  makeTree: function(arr) {
+    var res = []
+    var temp = []
+    for (var i = 0; i < arr.length; i++) {
+      var node = arr[i]
+      if (!node.pid) {
+        res.push(node)
+      } else {
+        temp.push(node)
+      }
+    }
+    this.loop(res, temp)
+    console.log(res)
+    return res
+  }
+}
+
+tree.makeTree(newsList)
